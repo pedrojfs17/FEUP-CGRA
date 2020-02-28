@@ -23,11 +23,13 @@ class MyScene extends CGFscene {
         this.axis = new CGFaxis(this);
         this.tangram = new MyTangram(this);
         this.unitCube = new MyUnitCube(this);
+        this.unitCubeQuad = new MyUnitCubeQuad(this);
 
         //Objects connected to MyInterface
         this.displayAxis = true;
         this.displayTangram = true;
         this.displayUnitCube = true;
+        this.displayUnitCubeQuad = true;
         this.scaleFactor = 1;
     }
     initLights() {
@@ -71,6 +73,7 @@ class MyScene extends CGFscene {
 
         // ---- BEGIN Primitive drawing section
 
+        // Top left corner in the origin and parallel to the XZ axis
         this.pushMatrix();
         this.rotate(-Math.PI / 2, 1, 0, 0);
         this.translate(3, -5, 0);
@@ -79,10 +82,11 @@ class MyScene extends CGFscene {
         this.pushMatrix();
         this.translate(0, 0, -0.51);
         this.scale(6, 10, 1);
-        if (this.displayUnitCube) {
-            this.setDiffuse(1, 1, 1, 0);
+        this.setDiffuse(1, 1, 1, 0);
+        if (this.displayUnitCube)
             this.unitCube.display();
-        }
+        if (this.displayUnitCubeQuad)
+            this.unitCubeQuad.display();
         this.popMatrix();
 
         // Display tangram
