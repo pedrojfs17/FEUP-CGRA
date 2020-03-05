@@ -109,7 +109,7 @@ class MyScene extends CGFscene {
 
         // Table
         if (this.displayTable) {
-            this.setDiffuse(1, 1, 1, 0);
+            this.setDiffuse(0,1,0,0);
             this.table.display();
         }
 
@@ -117,6 +117,7 @@ class MyScene extends CGFscene {
         this.pushMatrix();
         this.translate(0, 0, -6);
         if (this.displayChair) {
+            this.setDiffuse(1,0,0,0);
             this.backChair.display();
         }
         this.popMatrix();
