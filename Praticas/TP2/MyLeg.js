@@ -11,7 +11,7 @@ class MyLeg extends CGFobject {
     
     display() {
         this.scene.pushMatrix();
-        this.scene.scale(0.5, 5, 0.5);
+        this.scene.scale(0.75, 5, 0.75);
         this.cube.display();
         this.scene.popMatrix();
     }

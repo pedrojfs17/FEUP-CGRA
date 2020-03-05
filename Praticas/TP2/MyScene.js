@@ -25,13 +25,18 @@ class MyScene extends CGFscene {
         this.unitCube = new MyUnitCube(this);
         //this.unitCubeQuad = new MyUnitCubeQuad(this);
         this.table = new MyTable(this);
+        this.backChair = new MyChair(this);
+        this.frontChair = new MyChair(this);
+        this.leftChair = new MyChair(this);
+        this.rightChair = new MyChair(this);
 
         //Objects connected to MyInterface
         this.displayAxis = true;
-        this.displayTangram = true;
-        this.displayUnitCube = true;
+        this.displayTangram = false;
+        this.displayUnitCube = false;
         //this.displayUnitCubeQuad = true;
         this.displayTable = true;
+        this.displayChair = true;
         this.scaleFactor = 1;
     }
     initLights() {
@@ -75,6 +80,8 @@ class MyScene extends CGFscene {
 
         // ---- BEGIN Primitive drawing section
 
+        // Tangram and Unit Cube
+
         // Top left corner in the origin and parallel to the XZ axis
         this.pushMatrix();
         this.rotate(-Math.PI / 2, 1, 0, 0);
@@ -98,10 +105,48 @@ class MyScene extends CGFscene {
 
         this.popMatrix();
 
+        // ------------------------------------------------------------------------------------
+
+        // Table
         if (this.displayTable) {
             this.setDiffuse(1, 1, 1, 0);
             this.table.display();
         }
+
+        // Back Chair
+        this.pushMatrix();
+        this.translate(0, 0, -6);
+        if (this.displayChair) {
+            this.backChair.display();
+        }
+        this.popMatrix();
+
+        // Front Chair
+        this.pushMatrix();
+        this.rotate(Math.PI, 0, 1, 0);
+        this.translate(0, 0, -6);
+        if (this.displayChair) {
+            this.frontChair.display();
+        }
+        this.popMatrix();
+
+        // Left Chair
+        this.pushMatrix();
+        this.rotate(Math.PI / 2, 0, 1, 0);
+        this.translate(0, 0, -6);
+        if (this.displayChair) {
+            this.backChair.display();
+        }
+        this.popMatrix();
+
+        // Right Chair
+        this.pushMatrix();
+        this.rotate(-Math.PI / 2, 0, 1, 0);
+        this.translate(0, 0, -6);
+        if (this.displayChair) {
+            this.backChair.display();
+        }
+        this.popMatrix();
 
         // ---- END Primitive drawing section
 
