@@ -38,6 +38,7 @@ class MyScene extends CGFscene {
         this.displayNormals = false;
         this.objectComplexity = 0.5;
         this.scaleFactor = 2.0;
+        this.ambientLight = 0.3;
 
     }
     initLights() {
@@ -140,6 +141,8 @@ class MyScene extends CGFscene {
         this.materialIDs = {'Red Ambient': 0, 'Red Diffuse': 1, 'Red Specular': 2, 'Custom': 3 };
     }
     display() {
+        this.setGlobalAmbientLight(this.ambientLight, this.ambientLight, this.ambientLight, 1.0);
+
         // ---- BEGIN Background, camera and axis setup
         // Clear image and depth buffer everytime we update the scene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
