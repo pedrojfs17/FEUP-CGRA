@@ -17,7 +17,27 @@ class MyUnitCube extends CGFobject {
             -0.5, -0.5, -0.5,	//Bottom back left - 4
 			0.5, -0.5, -0.5,	//Bottom back right - 5
 			-0.5, 0.5, -0.5,	//Top back left - 6
-            0.5, 0.5, -0.5	    //Top back right - 7
+            0.5, 0.5, -0.5,	    //Top back right - 7
+
+            // Reepeat for the normals
+            -0.5, -0.5, 0.5,	//Bottom front left - 0
+			0.5, -0.5, 0.5,	    //Bottom front right - 1
+			-0.5, 0.5, 0.5,	    //Top front left - 2
+            0.5, 0.5, 0.5,	    //Top front right - 3
+            -0.5, -0.5, -0.5,	//Bottom back left - 4
+			0.5, -0.5, -0.5,	//Bottom back right - 5
+			-0.5, 0.5, -0.5,	//Top back left - 6
+            0.5, 0.5, -0.5,	    //Top back right - 7
+
+            // Repeat for the normals
+            -0.5, -0.5, 0.5,	//Bottom front left - 0
+			0.5, -0.5, 0.5,	    //Bottom front right - 1
+			-0.5, 0.5, 0.5,	    //Top front left - 2
+            0.5, 0.5, 0.5,	    //Top front right - 3
+            -0.5, -0.5, -0.5,	//Bottom back left - 4
+			0.5, -0.5, -0.5,	//Bottom back right - 5
+			-0.5, 0.5, -0.5,	//Top back left - 6
+            0.5, 0.5, -0.5,	    //Top back right - 7
             
 		];
 
@@ -47,6 +67,42 @@ class MyUnitCube extends CGFobject {
             5, 1, 4,
             4, 1, 0
             
+        ];
+        
+        this.normals = [
+            // Front normals
+            0,0,1,
+            0,0,1,
+            0,0,1,
+            0,0,1,
+
+            // Back normals
+			0,0,-1,
+            0,0,-1,
+            0,0,-1,
+            0,0,-1,
+
+            // Bottom
+            0,-1,0,
+            0,-1,0,
+            // Top
+            0,1,0,
+            0,1,0,
+            // Bottom
+            0,-1,0,
+            0,-1,0,
+            // Top
+            0,1,0,
+            0,1,0,
+            
+            -1,0,0, // Left
+            1,0,0, // Right
+            -1,0,0, // Left
+            1,0,0, // Right
+            -1,0,0, // Left
+            1,0,0, // Right
+            -1,0,0, // Left
+            1,0,0, // Right
 		];
 
 		//The defined indices (and corresponding vertices)
@@ -54,5 +110,11 @@ class MyUnitCube extends CGFobject {
 		this.primitiveType = this.scene.gl.TRIANGLES;
 
 		this.initGLBuffers();
+    }
+    
+    updateBuffers(complexity){
+		// reinitialize buffers
+		this.initBuffers();
+		this.initNormalVizBuffers();
 	}
 }
