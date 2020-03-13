@@ -87,7 +87,7 @@ class MyTangram extends CGFobject {
         this.scene.multMatrix(tra);
         this.scene.multMatrix(rot);
         //this.scene.setDiffuse(0,1,0,0);
-        this.green.apply();
+        //this.green.apply();
         this.baseSquare.display();
         this.scene.popMatrix();
 
