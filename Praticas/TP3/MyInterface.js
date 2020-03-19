@@ -18,13 +18,17 @@ class MyInterface extends CGFinterface {
 
         this.gui.add(this.scene, 'displayAxis').name("Display axis");
         this.gui.add(this.scene, 'displayNormals').name("Display normals");
-
+        //Slider for ambient light manipulation
+        this.gui.add(this.scene,'ambientLight',0.1,1.0).name('Ambient Light');
+        /*
+        this.gui.add(this.scene,'ambientLightRed',0.1,1.0).name('Ambient Light R');
+        this.gui.add(this.scene,'ambientLightGreen',0.1,1.0).name('Ambient Light G');
+        this.gui.add(this.scene,'ambientLightBlue',0.1,1.0).name('Ambient Light B');
+        */
         // example of a dropdown that has numeric ID's associated, 
         // and an event handler to be called when the selection changes
         this.gui.add(this.scene, 'selectedObject', this.scene.objectIDs).name('Selected Object').onChange(this.scene.updateObjectComplexity.bind(this.scene));
-
-        this.gui.add(this.scene, 'ambientLight', 0.1, 1.0).name('Ambient Light');
-
+        
         this.gui.add(this.scene, 'scaleFactor', 0.1, 10.0).name('Scale');
         this.gui.add(this.scene, 'objectComplexity', 0.01, 1.0).onChange(this.scene.updateObjectComplexity.bind(this.scene));
 
