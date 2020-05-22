@@ -10,15 +10,15 @@ class MyPropeller extends CGFobject {
         this.angle=0;
 
     }
+    initNormalVizBuffers(){
+        this.quad.initNormalVizBuffers();
+    }
     
     setAngle(angle){
         this.angle= angle*Math.PI/180;
     }
     
     display(){
-        this.scene.setDiffuse(0,0,1);
-        this.scene.setSpecular(0, 0, 0, 1);
-        this.scene.setAmbient(0, 0, 0.5, 1);
 
         this.scene.pushMatrix();
         this.scene.rotate(this.angle,0,0,1);

@@ -5,6 +5,8 @@
 class MyScene extends CGFscene {
     constructor() {
         super();
+        this.selectedExampleShader = 0;
+		this.showShaderCode = false;
     }
     init(application) {
         super.init(application);
@@ -29,10 +31,12 @@ class MyScene extends CGFscene {
         //Initialize scene objects
         this.axis = new CGFaxis(this);
         this.vehicle = new MyVehicle(this,this.slices,this.stacks);
+        this.terrain=new MyTerrain(this);
         this.objects=[
             new MySphere(this, this.slices, this.stacks),
             new MyCylinder(this, this.slices),
             new MyUnitCubeQuad(this),
+            
         ];
         this.objectList={
             'Sphere' : 0,
@@ -41,15 +45,18 @@ class MyScene extends CGFscene {
         };
 
         //Objects connected to MyInterface
-        this.displayAxis = true;
-        this.displayObject = false;
+        this.displayAxis = false;
+        this.displayObject = true;
         this.displayNormals = false;
-        this.displayVehicle=false;
-        this.currentTexture=-1;
-        this.currentObject=0;
+        this.displayVehicle=true;
+        this.displayTerrain=true;
+        this.currentTexture=2;
+        this.currentObject=2;
         this.complexity=0.0;
         this.speedFactor=1;
         this.scaleFactor=1;
+        this.dropCooldown = 0;
+        
         //Material
         this.material=new CGFappearance(this);
         this.material.setAmbient(0.7,0.7,0.7,1);
@@ -57,19 +64,28 @@ class MyScene extends CGFscene {
         this.material.setDiffuse(0.2,0.2,0.2,1);
         this.material.setShininess(10);
         this.material.loadTexture('images/earth.jpg');
-        this.material.setTextureWrap('REPEAT','REPEAT');
+        this.material.setTextureWrap('CLAMP_TO_EDGE','CLAMP_TO_EDGE');
 
         //Textures
         this.textures=[
             new CGFtexture(this,'images/earth.jpg'),
             new CGFtexture(this,'images/cubemap.jpg'),
             new CGFtexture(this,'images/desert.png'),
+            new CGFtexture(this,'images/heightmap.jpg'),
         ];
         this.textureList={
             'Earth':0,
-            'Cubemap':1,
+            'Jungle':1,
             'Desert':2,
         };
+
+        this.supplies=[];
+        for(var i=0;i<5;i++){
+            this.supplies.push(new MySupply(this));
+        }
+        this.nSupply=0;
+        this.billboard = new MyBillboard(this);
+        this.updateTexture();
     }
     initLights() {
         this.setGlobalAmbientLight(0.5, 0.5, 0.5, 1.0);
@@ -79,7 +95,7 @@ class MyScene extends CGFscene {
         this.lights[0].update();
     }
     initCameras() {
-        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+        this.camera = new CGFcamera(0.5, 0.1, 500, vec3.fromValues(30, 20, 30), vec3.fromValues(0, 0, 0));
     }
     setDefaultAppearance() {
         this.setAmbient(0.2, 0.4, 0.8, 1.0);
@@ -91,15 +107,15 @@ class MyScene extends CGFscene {
         this.objects[this.currentObject];
     }
     updateTexture(){
-        if(this.currentObject!=2)
+        if(this.currentObject != 2 && this.currentTexture == 0)
             this.material.setTexture(this.textures[this.currentTexture]);
         else{
             this.objects[this.currentObject].updateTexture();
         }
     }
     checkKeys(t){
-        var text="Keys pressed: ";
-        var keysPressed=false;
+        var text = "Keys pressed: ";
+        var keysPressed = false;
 
         if(this.gui.isKeyPressed("KeyP")){
             text+=" P ";
@@ -109,12 +125,12 @@ class MyScene extends CGFscene {
         if(!this.vehicle.automatic){
             if(this.gui.isKeyPressed("KeyW")){
                 text+=" W ";
-                this.vehicle.accelerate(0.3*this.speedFactor);
+                this.vehicle.accelerate(0.1*this.speedFactor);
                 keysPressed=true;
             }
             if(this.gui.isKeyPressed("KeyS")){
                 text+=" S ";
-                this.vehicle.accelerate(-0.3*this.speedFactor);
+                this.vehicle.accelerate(-0.1*this.speedFactor);
                 keysPressed=true;
             }
             if(this.gui.isKeyPressed("KeyA")){
@@ -131,7 +147,26 @@ class MyScene extends CGFscene {
         
         if (this.gui.isKeyPressed("KeyR")) {
             text+=" R "
+            // Reset Vehicle
             this.vehicle.reset();
+            // Reset Supplies
+            this.nSupply=0;
+            for(var i=0;i<5;i++){
+                this.supplies[i].state=SupplyStates.INACTIVE;
+                this.supplies[i].y_pos=9;
+            }
+            this.billboard.reset();
+            keysPressed = true;
+        }
+
+        if(this.gui.isKeyPressed("KeyL") && this.dropCooldown == 0){
+            text+=" L ";
+            if(this.nSupply!=5){
+                this.supplies[this.nSupply].dropSupply(this.vehicle.x_pos,this.vehicle.z_pos);
+                this.nSupply++;
+            }
+            this.dropCooldown = 10;
+            this.billboard.update();
             keysPressed = true;
         }
 
@@ -139,15 +174,21 @@ class MyScene extends CGFscene {
             console.log(text);
         }
         else{
-            if(!this.vehicle.automatic)
+            if(!this.vehicle.automatic) {
                 this.vehicle.turn(0);
+                this.vehicle.accelerate(0);
+            }
         }
     }
     // called periodically (as per setUpdatePeriod() in init())
     update(t){
+        if (this.dropCooldown > 0)
+            this.dropCooldown--;
         this.checkKeys(t);
         this.vehicle.update(t);
-        //To be done...
+        for (var i=0 ; i<5; i++){
+            this.supplies[i].update(t);
+        }
     }
 
     updateComplexity(){
@@ -181,9 +222,7 @@ class MyScene extends CGFscene {
 
         // ---- BEGIN Primitive drawing section
         this.pushMatrix();
-
         
-
         //This sphere does not have defined texture coordinates
         //this.incompleteSphere.display();
         if (this.displayNormals)
@@ -197,11 +236,23 @@ class MyScene extends CGFscene {
         }
 
         if(this.displayVehicle){
-            this.scale(this.scaleFactor,this.scaleFactor,this.scaleFactor);
             this.vehicle.display();
+            //this.popMatrix();
+        }
+
+        for (var i=0 ; i<5; i++){
+            this.supplies[i].display();
+        }
+        
+        
+        if(this.displayTerrain){
+            this.billboard.display();
+            this.terrain.display();
         }
         
         this.popMatrix();
+        
         // ---- END Primitive drawing section
+        this.setActiveShader(this.defaultShader);
     }
 }
