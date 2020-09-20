@@ -12,8 +12,8 @@ Este repositório contém:
 
 ## Grades
 
-**CGRA final grade :**
+**CGRA final grade : 19**
 
-| | Projeto |
-| --- | --- |
-| **Nota** | -|
+| | Projeto | Exame |
+| --- | --- | --- |
+| **Nota** | 18.5| 19.9|
